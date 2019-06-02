@@ -1,22 +1,33 @@
-﻿module Elo
+﻿namespace Elo
 
-open System
+module Rating =
+    type T = Rating of int
 
-type Rating = Rating of int
+    let create x =
+        if x >= 100 then
+            Some (Rating x)
+        else
+            None
 
-type Score = Score of decimal
+    let value (Rating x) = x
 
-type Outcome = {
-    ScoreA : Score
-    ScoreB : Score
-}
+module Score =
+    open System
 
-let expectedOutcome (Rating rA) (Rating rB) =
+    type T = Score of decimal
+
+    let create x =
+        if x >= 0m && x <= 1m then
+            Some (Score x)
+        else
+            None
+
+    let value (Score x) = x
+
     let expectedScore rA rB =
-        1.0 / (1.0 + (10.0 ** ((float (rB - rA)) / 400.0)))
-        |> decimal
-        |> fun x -> Decimal.Round(x, 2)
-    let expectedScoreForA = expectedScore rA rB
-    {
-        ScoreA = Score expectedScoreForA
-        ScoreB = Score <| 1m - expectedScoreForA }
+        let eA =
+            1.0 / (1.0 + (10.0 ** ((float (Rating.value rB - Rating.value rA)) / 400.0)))
+            |> decimal
+            |> fun x -> Decimal.Round(x, 2)
+        let eB = 1m - eA
+        Score eA, Score eB
