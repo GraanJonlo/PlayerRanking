@@ -1,5 +1,6 @@
 namespace Elo
 
+[<RequireQualifiedAccess>]
 module Rating =
 
     type T
@@ -7,6 +8,7 @@ module Rating =
     val create : int -> T option
     val value : T -> int
 
+[<RequireQualifiedAccess>]
 module Score =
     type T
 
